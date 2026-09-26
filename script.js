@@ -87,11 +87,14 @@ async function renderPageToCanvas(pageNum, canvas) {
   canvas.style.display = 'block';
   const page = await pdfDoc.getPage(pageNum);
   const raw = page.getViewport({ scale: 1 });
-  const maxHeight = Math.min(window.innerHeight * 0.76, 900);
-  const scale = maxHeight / raw.height;
-  const viewport = page.getViewport({ scale });
+  const cssMaxHeight = window.innerHeight * 0.76;
+  const cssScale = cssMaxHeight / raw.height;
+  const pixelRatio = window.devicePixelRatio || 1;
+  const viewport = page.getViewport({ scale: cssScale * pixelRatio });
   canvas.width = viewport.width;
   canvas.height = viewport.height;
+  canvas.style.width = (raw.width * cssScale) + 'px';
+  canvas.style.height = (raw.height * cssScale) + 'px';
   const ctx = canvas.getContext('2d');
   await page.render({ canvasContext: ctx, viewport }).promise;
 }
