@@ -262,7 +262,7 @@ section { padding: 96px 32px; max-width: var(--max-width); margin: 0 auto; }
   gap: 14px;
   width: 100%;
   height: 100%;
-  padding: 40px 64px;
+  padding: 40px 24px;
   box-sizing: border-box;
   background: var(--brown);
   position: relative;
@@ -283,19 +283,28 @@ section { padding: 96px 32px; max-width: var(--max-width); margin: 0 auto; }
   background: white;
 }
 .book-nav {
-  background: rgba(255,255,255,0.15);
-  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: rgba(34, 27, 21, 0.72);
+  border: 2px solid rgba(246, 241, 231, 0.5);
   color: var(--cream);
   font-size: 1.6rem;
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
-.book-nav:hover { background: rgba(255,255,255,0.3); }
-.book-nav:disabled { opacity: 0.25; cursor: default; }
+.book-nav:hover {
+  background: var(--petrol);
+  border-color: var(--petrol);
+  transform: translateY(-50%) scale(1.15);
+}
+.book-prev, .gallery-prev { left: 16px; }
+.book-next, .gallery-next { right: 16px; }
 .book-page-indicator {
   position: absolute;
   bottom: 12px;
@@ -306,8 +315,9 @@ section { padding: 96px 32px; max-width: var(--max-width); margin: 0 auto; }
   letter-spacing: 0.03em;
 }
 @media (max-width: 700px) {
-  .book-viewer { padding: 24px 48px; }
+  .book-viewer { padding: 24px 12px; }
   .book-pages canvas { max-height: 62vh; }
+  .book-nav { width: 38px; height: 38px; font-size: 1.3rem; }
 }
 
 .gallery-viewer {
@@ -317,7 +327,7 @@ section { padding: 96px 32px; max-width: var(--max-width); margin: 0 auto; }
   gap: 14px;
   width: 100%;
   height: 100%;
-  padding: 40px 64px;
+  padding: 40px 24px;
   box-sizing: border-box;
   background: var(--brown);
   position: relative;
@@ -330,7 +340,7 @@ section { padding: 96px 32px; max-width: var(--max-width); margin: 0 auto; }
   box-shadow: 0 8px 28px rgba(0,0,0,0.45);
 }
 @media (max-width: 700px) {
-  .gallery-viewer { padding: 24px 48px; }
+  .gallery-viewer { padding: 24px 12px; }
   .gallery-viewer img { max-height: 62vh; }
 }
 .pdf-modal-close {
