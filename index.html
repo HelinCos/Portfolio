@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 </head>
 <body>
 
@@ -87,26 +88,27 @@
     </div>
 
     <div class="work-grid">
-      <article class="work-card">
+      <article class="work-card" data-gallery="assets/work/01_Einstieg.jpg,assets/work/02_Generierung.jpg,assets/work/03_Quelle.jpg,assets/work/04_Quelle.jpg,assets/work/05_Quelle_geoeffnet.jpg,assets/work/06_unzureichende_Antwort.jpg">
         <div class="work-thumb"><img src="assets/work/02_Generierung.jpg" alt="Chatbot-Oberfläche GAIA mit generierter Antwort"></div>
         <h3>GAIA — Gen-AI-Assistent für die BWI</h3>
         <p>UI-Design für einen internen KI-Assistenten, der Fragen zu Vorschriften und Dokumenten mit Quellenverweisen beantwortet. Werkstudierendenprojekt, Start Oktober 2026.</p>
         <span class="work-tag">UI Design · Figma · BWI</span>
+        <a class="work-link" href="https://www.figma.com/design/xLAjSZx2zi8jR9YrhoR9Ib/Helin?node-id=0-1&t=m3MlEbADA2UUK4bO-1" target="_blank" rel="noopener">Auf Figma ansehen ↗</a>
       </article>
 
-      <article class="work-card">
+      <article class="work-card" data-gallery="assets/work/01Home.jpg,assets/work/02Line_Up_Freitag.jpg,assets/work/03Line_Up_Samstag.jpg,assets/work/04Line_Up_Sonntag.jpg,assets/work/05Location.jpg,assets/work/06Tickets.jpg,assets/work/07FAQ.jpg">
         <div class="work-thumb"><img src="assets/work/01Home.jpg" alt="Startseite der Website ECHO PULSE"></div>
         <h3>ECHO PULSE — Festival-Website</h3>
         <p>UI-Konzept für eine fiktive Techno-Festival-Website, entstanden um mir Figma und UI-Grundlagen selbst beizubringen: Line-up, Location, Tickets und FAQ.</p>
         <span class="work-tag">UI Design · Figma</span>
-        <a class="work-link" href="https://www.figma.com/design/xLAjSZx2zi8jR9YrhoR9Ib/Helin?node-id=20-383&t=m3MlEbADA2UUK4bO-1" target="_blank" rel="noopener">Prototyp ansehen ↗</a>
+        <a class="work-link" href="https://www.figma.com/design/xLAjSZx2zi8jR9YrhoR9Ib/Helin?node-id=20-383&t=m3MlEbADA2UUK4bO-1" target="_blank" rel="noopener">Auf Figma ansehen ↗</a>
       </article>
 
       <article class="work-card">
         <div class="work-thumb"><img src="assets/work/wasser.jpg" alt="Editorial-Design Das hier ist Wasser"></div>
         <h3>„Das hier ist Wasser“ — Editorial Design</h3>
         <p>Redaktionelle Gestaltung der Rede „This Is Water“ von David Foster Wallace: Typografie, Satzspiegel und Bildkonzept für ein kleines Buch.</p>
-        <span class="work-tag">Editorial Design</span>
+        <span class="work-tag">Editorial Design · Adobe</span>
         <a class="work-link" href="assets/docs/wasser.pdf" target="_blank" rel="noopener">Ausarbeitung ansehen ↗</a>
       </article>
 
@@ -114,7 +116,7 @@
         <div class="work-thumb"><img src="assets/work/laerm.jpg" alt="Fotobuch Im stillen Lärm"></div>
         <h3>„Im stillen Lärm“ — Foto & Text</h3>
         <p>Persönliches Booklet aus eigenen Fotos und Texten über Rückzug, Reizüberflutung und das Finden von Ruhe im Alltag.</p>
-        <span class="work-tag">Editorial Design · Fotografie</span>
+        <span class="work-tag">Editorial Design · Fotografie · Adobe</span>
         <a class="work-link" href="assets/docs/laerm.pdf" target="_blank" rel="noopener">Ausarbeitung ansehen ↗</a>
       </article>
 
@@ -122,7 +124,7 @@
         <div class="work-thumb"><img src="assets/work/angst.jpg" alt="Covergestaltung Lass die Angst fallen"></div>
         <h3>„Lass die Angst fallen“ — Cover</h3>
         <p>Coverentwurf mit Bildbearbeitung und Typografie zum Thema Loslassen und Angst.</p>
-        <span class="work-tag">Cover Design</span>
+        <span class="work-tag">Cover Design · Adobe</span>
         <a class="work-link" href="assets/docs/angst.pdf" target="_blank" rel="noopener">PDF ansehen ↗</a>
       </article>
     </div>
@@ -147,9 +149,24 @@
 
 <div id="pdf-modal" class="pdf-modal" aria-hidden="true">
   <div class="pdf-modal-backdrop" data-close></div>
-  <div class="pdf-modal-content">
+  <div class="pdf-modal-content" id="pdf-modal-content">
     <button class="pdf-modal-close" data-close aria-label="Schließen">✕</button>
     <iframe id="pdf-modal-frame" src="" title="Ausarbeitung"></iframe>
+    <div id="book-viewer" class="book-viewer">
+      <button class="book-nav book-prev" aria-label="Vorherige Seite">‹</button>
+      <div class="book-pages">
+        <canvas id="book-canvas-left"></canvas>
+        <canvas id="book-canvas-right"></canvas>
+      </div>
+      <button class="book-nav book-next" aria-label="Nächste Seite">›</button>
+      <div class="book-page-indicator" id="book-page-indicator"></div>
+    </div>
+    <div id="gallery-viewer" class="gallery-viewer">
+      <button class="book-nav gallery-prev" aria-label="Vorheriges Bild">‹</button>
+      <img id="gallery-image" src="" alt="Screen">
+      <button class="book-nav gallery-next" aria-label="Nächstes Bild">›</button>
+      <div class="book-page-indicator" id="gallery-indicator"></div>
+    </div>
   </div>
 </div>
 
