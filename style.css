@@ -151,7 +151,6 @@ section { padding: 96px 32px; max-width: var(--max-width); margin: 0 auto; }
 }
 
 .about-text p { margin: 0 0 20px; color: var(--ink-soft); }
-.about-text p:first-child { color: var(--ink); font-size: 1.1rem; }
 
 .timeline {
   list-style: none;
