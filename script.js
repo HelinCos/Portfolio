@@ -36,7 +36,18 @@ let galleryIndex = 0;
 const BOOK_VIEWER_FILES = ['wasser.pdf', 'laerm.pdf'];
 
 let pdfDoc = null;
-let spreadStart = 1;
+let spreads = [];
+let spreadIndex = 0;
+
+function buildSpreads(total) {
+  const result = [[1]];
+  let p = 2;
+  while (p <= total) {
+    if (p + 1 <= total) { result.push([p, p + 1]); p += 2; }
+    else { result.push([p]); p += 1; }
+  }
+  return result;
+}
 
 if (window.pdfjsLib) {
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
@@ -86,20 +97,11 @@ async function renderPageToCanvas(pageNum, canvas) {
 }
 
 async function renderSpread() {
-  const total = pdfDoc.numPages;
-  let leftNum, rightNum;
-  if (spreadStart === 1) {
-    leftNum = 1;
-    rightNum = null;
-  } else {
-    leftNum = spreadStart;
-    rightNum = spreadStart + 1 <= total ? spreadStart + 1 : null;
-  }
+  const [leftNum, rightNum] = spreads[spreadIndex];
   await renderPageToCanvas(leftNum, canvasLeft);
-  await renderPageToCanvas(rightNum, canvasRight);
+  await renderPageToCanvas(rightNum || null, canvasRight);
+  const total = pdfDoc.numPages;
   pageIndicator.textContent = rightNum ? `Seite ${leftNum}–${rightNum} von ${total}` : `Seite ${leftNum} von ${total}`;
-  if (btnPrev) btnPrev.disabled = spreadStart <= 1;
-  if (btnNext) btnNext.disabled = (rightNum || leftNum) >= total;
 }
 
 async function openBookViewer(href) {
@@ -112,15 +114,14 @@ async function openBookViewer(href) {
   pageIndicator.textContent = 'Lädt …';
   const loadingTask = pdfjsLib.getDocument(href);
   pdfDoc = await loadingTask.promise;
-  spreadStart = 1;
+  spreads = buildSpreads(pdfDoc.numPages);
+  spreadIndex = 0;
   renderSpread();
 }
 
 function renderGalleryImage() {
   galleryImage.src = galleryImages[galleryIndex];
   galleryIndicator.textContent = `Bild ${galleryIndex + 1} von ${galleryImages.length}`;
-  if (galleryPrevBtn) galleryPrevBtn.disabled = galleryIndex === 0;
-  if (galleryNextBtn) galleryNextBtn.disabled = galleryIndex === galleryImages.length - 1;
 }
 
 function openGallery(images) {
@@ -137,28 +138,26 @@ function openGallery(images) {
 
 if (galleryPrevBtn) {
   galleryPrevBtn.addEventListener('click', () => {
-    if (galleryIndex > 0) { galleryIndex--; renderGalleryImage(); }
+    galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
+    renderGalleryImage();
   });
 }
 if (galleryNextBtn) {
   galleryNextBtn.addEventListener('click', () => {
-    if (galleryIndex < galleryImages.length - 1) { galleryIndex++; renderGalleryImage(); }
+    galleryIndex = (galleryIndex + 1) % galleryImages.length;
+    renderGalleryImage();
   });
 }
 
 if (btnPrev) {
   btnPrev.addEventListener('click', () => {
-    if (spreadStart <= 1) return;
-    spreadStart = spreadStart === 2 ? 1 : spreadStart - 2;
+    spreadIndex = (spreadIndex - 1 + spreads.length) % spreads.length;
     renderSpread();
   });
 }
 if (btnNext) {
   btnNext.addEventListener('click', () => {
-    const total = pdfDoc.numPages;
-    let next = spreadStart === 1 ? 2 : spreadStart + 2;
-    if (next > total) return;
-    spreadStart = next;
+    spreadIndex = (spreadIndex + 1) % spreads.length;
     renderSpread();
   });
 }
